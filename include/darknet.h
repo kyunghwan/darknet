@@ -499,6 +499,7 @@ typedef struct {
 
 typedef struct{
     float x, y, w, h;
+    float a1, a2;
 } box;
 
 typedef struct matrix{
@@ -556,6 +557,7 @@ typedef struct load_args{
 typedef struct{
     int id;
     float x,y,w,h;
+    float a1,a2;    
     float left, right, top, bottom;
 } box_label;
 

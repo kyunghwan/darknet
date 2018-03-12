@@ -92,11 +92,15 @@ float delta_region_box(box truth, float *x, float *biases, int n, int index, int
     float ty = (truth.y*h - j);
     float tw = log(truth.w*w / biases[2*n]);
     float th = log(truth.h*h / biases[2*n + 1]);
+    float ta1 = (truth.a1);
+    float ta2 = (truth.a2);
 
     delta[index + 0*stride] = scale * (tx - x[index + 0*stride]);
     delta[index + 1*stride] = scale * (ty - x[index + 1*stride]);
     delta[index + 2*stride] = scale * (tw - x[index + 2*stride]);
     delta[index + 3*stride] = scale * (th - x[index + 3*stride]);
+    delta[index + 4*stride] = scale * (ta1 - x[index + 4*stride]);
+    delta[index + 5*stride] = scale * (ta2 - x[index + 5*stride]);
     return iou;
 }
 
