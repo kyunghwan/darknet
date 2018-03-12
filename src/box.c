@@ -10,8 +10,8 @@ box float_to_box(float *f, int stride)
     b.y = f[1*stride];
     b.w = f[2*stride];
     b.h = f[3*stride];
-    b.a1 = f[5*stride];
-    b.a2 = f[6*stride];
+    b.a1 = f[4*stride];
+    b.a2 = f[5*stride];
     return b;
 }
 
