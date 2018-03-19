@@ -448,7 +448,6 @@ void fill_truth_detection(char *path, int num_boxes, float *truth, int classes, 
         truth[i*7+4] = a1;
         truth[i*7+5] = a2;
         truth[i*7+6] = id;
-
     }
     free(boxes);
 }
@@ -962,7 +961,7 @@ data load_data_detection(int n, char **paths, int m, int w, int h, int boxes, in
     d.X.vals = calloc(d.X.rows, sizeof(float*));
     d.X.cols = h*w*3;
 
-    d.y = make_matrix(n, 5*boxes);
+    d.y = make_matrix(n, 7*boxes);
     for(i = 0; i < n; ++i){
         image orig = load_image_color(random_paths[i], 0, 0);
         image sized = make_image(w, h, orig.c);

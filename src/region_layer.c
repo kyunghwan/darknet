@@ -200,6 +200,8 @@ void forward_region_layer(const layer l, network net)
     int class_count = 0;
     *(l.cost) = 0;
     for (b = 0; b < l.batch; ++b) {
+        box truth_val = float_to_box(net.truth + 0*(l.coords + 1) + b*l.truths, 1);
+
         if(l.softmax_tree){
             int onlyclass = 0;
             for(t = 0; t < 30; ++t){
@@ -261,6 +263,9 @@ void forward_region_layer(const layer l, network net)
                         truth.y = (j + .5)/l.h;
                         truth.w = l.biases[2*n]/l.w;
                         truth.h = l.biases[2*n+1]/l.h;
+                        truth.a1 = truth_val.a1;
+                        truth.a2 = truth_val.a2;
+
                         delta_region_box(truth, l.output, l.biases, n, box_index, i, j, l.w, l.h, l.delta, .01, l.w*l.h);
                     }
                 }
