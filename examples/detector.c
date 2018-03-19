@@ -599,7 +599,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         float **probs = calloc(l.w*l.h*l.n, sizeof(float *));
         for(j = 0; j < l.w*l.h*l.n; ++j) probs[j] = calloc(l.classes + 1, sizeof(float *));
         float **masks = 0;
-        if (l.coords > 4){
+        if (l.coords > 6){
             masks = calloc(l.w*l.h*l.n, sizeof(float*));
             for(j = 0; j < l.w*l.h*l.n; ++j) masks[j] = calloc(l.coords-4, sizeof(float *));
         }

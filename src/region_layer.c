@@ -304,7 +304,7 @@ void forward_region_layer(const layer l, network net)
 
             int box_index = entry_index(l, b, best_n*l.w*l.h + j*l.w + i, 0);
             float iou = delta_region_box(truth, l.output, l.biases, best_n, box_index, i, j, l.w, l.h, l.delta, l.coord_scale *  (2 - truth.w*truth.h), l.w*l.h);
-            if(l.coords > 4){
+            if(l.coords > 6){
                 int mask_index = entry_index(l, b, best_n*l.w*l.h + j*l.w + i, 4);
                 delta_region_mask(net.truth + t*(l.coords + 1) + b*l.truths + 5, l.output, l.coords - 4, mask_index, l.delta, l.w*l.h, l.mask_scale);
             }
