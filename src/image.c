@@ -277,7 +277,8 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             rgb[1] = green;
             rgb[2] = blue;
             box b = boxes[i];
-
+            printf("%d a1 : %f\n",i,b.a1);
+            printf("%d a2 : %f\n",i,b.a2);
             int left  = (b.x-b.w/2.)*im.w;
             int right = (b.x+b.w/2.)*im.w;
             int top   = (b.y-b.h/2.)*im.h;
