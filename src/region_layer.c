@@ -80,6 +80,9 @@ box get_region_box(float *x, float *biases, int n, int index, int i, int j, int 
     b.y = (j + x[index + 1*stride]) / h;
     b.w = exp(x[index + 2*stride]) * biases[2*n]   / w;
     b.h = exp(x[index + 3*stride]) * biases[2*n+1] / h;
+    b.a1 = x[index + 4*stride];
+    b.a2 = x[index + 5*stride];
+
     return b;
 }
 
@@ -94,6 +97,10 @@ float delta_region_box(box truth, float *x, float *biases, int n, int index, int
     float th = log(truth.h*h / biases[2*n + 1]);
     float ta1 = (truth.a1);
     float ta2 = (truth.a2);
+
+    //printf("delta_region_box\n");
+    //printf("%f %f\n",ta1, x[index + 4*stride]);
+    //printf("%f %f\n",ta2, x[index + 5*stride]);
 
     delta[index + 0*stride] = scale * (tx - x[index + 0*stride]);
     delta[index + 1*stride] = scale * (ty - x[index + 1*stride]);

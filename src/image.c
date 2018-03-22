@@ -277,8 +277,37 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             rgb[1] = green;
             rgb[2] = blue;
             box b = boxes[i];
-            printf("%d a1 : %f\n",i,b.a1);
-            printf("%d a2 : %f\n",i,b.a2);
+            float angle1 = asin(b.a1)*180.0/3.1416;
+            float angle2 = acos(b.a2)*180.0/3.1416;
+            float angle1_2, angle2_2;
+
+            angle2_2 = -angle2;
+            if(angle1==0)
+            {
+                angle1_2 = 180.0;
+            }
+            else if(angle1<0)
+            {
+                angle1_2 = -90.0 - (angle1 + 90.0);
+            }
+            else
+            {
+                angle1_2 = 90.0 + (90.0 - angle1);
+            }
+            CvPoint box_centor;
+            box_centor.x = (int)(b.x*im.w);
+            box_centor.y = (int)(b.y*im.h);
+            printf("a1 %f\n",angle1);
+            printf("a2 %f\n",angle2);
+            printf("a1_2 %f\n",angle1_2);
+            printf("a2_2 %f\n",angle2_2);
+            printf("x %d\n",(int)(b.x*im.w));
+            printf("y %d\n",(int)(b.y*im.h));
+            printf("w %d\n",(int)(b.w*im.w));
+            printf("h %d\n",(int)(b.h*im.h));
+
+            im.data[ ((int)(b.y*im.h)-1)*im.w + (int)(b.x*im.w) ] = red;
+
             int left  = (b.x-b.w/2.)*im.w;
             int right = (b.x+b.w/2.)*im.w;
             int top   = (b.y-b.h/2.)*im.h;
