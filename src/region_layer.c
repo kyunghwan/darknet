@@ -171,6 +171,7 @@ void forward_region_layer(const layer l, network net)
     int i,j,b,t,n;
     memcpy(l.output, net.input, l.outputs*l.batch*sizeof(float));
 
+
 #ifndef GPU
     for (b = 0; b < l.batch; ++b){
         for(n = 0; n < l.n; ++n){
@@ -196,6 +197,20 @@ void forward_region_layer(const layer l, network net)
     }
 #endif
 
+    for (j = 0; j < l.h; ++j) {
+            for (i = 0; i < l.w; ++i) {
+                for (n = 0; n < l.n; ++n) {
+                    int box_index = entry_index(l, b, n*l.w*l.h + j*l.w + i, 0);
+                    float *x = l.output;
+
+                    if(x[box_index + 4*(l.w*l.h)]>1.0) x[box_index + 4*(l.w*l.h)] = 1.0;
+                    else if(x[box_index + 4*(l.w*l.h)]<-1.0) x[box_index + 4*(l.w*l.h)] = -1.0;
+                    
+                    if(x[box_index + 5*(l.w*l.h)]>1.0) x[box_index + 5*(l.w*l.h)] = 1.0;
+                    else if(x[box_index + 5*(l.w*l.h)]<-1.0) x[box_index + 5*(l.w*l.h)] = -1.0;
+                }
+            }
+    }
     memset(l.delta, 0, l.outputs * l.batch * sizeof(float));
     if(!net.train) return;
     float avg_iou = 0;

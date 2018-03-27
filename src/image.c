@@ -277,8 +277,14 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             rgb[1] = green;
             rgb[2] = blue;
             box b = boxes[i];
-            float angle1 = asin(b.a1)*180.0/3.1416;
-            float angle2 = acos(b.a2)*180.0/3.1416;
+            float ba1 = b.a1;
+            float ba2 = b.a2;
+            if(ba1>1.0)ba1 = 1.0;
+            if(ba1<-1.0)ba1 = -1.0;
+            if(ba2>1.0)ba2 = 1.0;
+            if(ba2<-1.0)ba2 = -1.0;
+            float angle1 = asin(ba1)*180.0/3.1416;
+            float angle2 = acos(ba2)*180.0/3.1416;
             float angle1_2, angle2_2;
 
             angle2_2 = -angle2;
@@ -297,15 +303,26 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             CvPoint box_centor;
             box_centor.x = (int)(b.x*im.w);
             box_centor.y = (int)(b.y*im.h);
+
             printf("a1 %f\n",angle1);
-            printf("a2 %f\n",angle2);
             printf("a1_2 %f\n",angle1_2);
+            printf("a2 %f\n",angle2);
             printf("a2_2 %f\n",angle2_2);
             printf("x %d\n",(int)(b.x*im.w));
             printf("y %d\n",(int)(b.y*im.h));
             printf("w %d\n",(int)(b.w*im.w));
             printf("h %d\n",(int)(b.h*im.h));
 
+            FILE* fp = NULL;
+            fp = fopen("result.txt","a");
+            if(fp==NULL)
+            {
+                printf("FILE OPEN ERROR");
+                exit(0);
+            }
+            
+            fprintf(fp,"%f %f %f %f %f %f %f %f\n",b.x, b.y, b.w, b.h, angle1, angle1_2, angle2, angle2_2);
+            fclose(fp);
             im.data[ ((int)(b.y*im.h)-1)*im.w + (int)(b.x*im.w) ] = red;
 
             int left  = (b.x-b.w/2.)*im.w;
