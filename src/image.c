@@ -279,6 +279,7 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             box b = boxes[i];
             float ba1 = b.a1;
             float ba2 = b.a2;
+            
             if(ba1>1.0)ba1 = 1.0;
             if(ba1<-1.0)ba1 = -1.0;
             if(ba2>1.0)ba2 = 1.0;
@@ -313,6 +314,40 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             printf("w %d\n",(int)(b.w*im.w));
             printf("h %d\n",(int)(b.h*im.h));
 
+            double angle_result;
+            double d_angle_result[4];
+            d_angle_result[0] = abs(angle1 - angle2);
+            d_angle_result[1] = abs(angle1 - angle2_2);
+            d_angle_result[2] = abs(angle1_2 - angle2);
+            d_angle_result[3] = abs(angle1_2 - angle2_2);
+
+            double min = 9999.9999;
+            int min_index = 0;
+            for (int n = 0; n < 4; n++) {
+                if (d_angle_result[n] < min) {
+                    min = d_angle_result[n];
+                    min_index = n;
+                }
+            }
+            switch(min_index)
+            {
+                case 0:
+                    angle_result = (angle1 + angle2)/2.0;
+                break;
+                case 1:
+                    angle_result = (angle1 + angle2_2)/2.0;
+                break;
+                case 2:
+                    angle_result = (angle1_2 + angle2)/2.0;
+                break;
+                case 3:
+                    angle_result = (angle1_2 + angle2_2)/2.0;
+                break;
+            }
+
+            printf("final angle %f\n",angle_result);
+            
+
             FILE* fp = NULL;
             fp = fopen("result.txt","a");
             if(fp==NULL)
@@ -321,7 +356,7 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
                 exit(0);
             }
             
-            fprintf(fp,"%f %f %f %f %f %f %f %f\n",b.x, b.y, b.w, b.h, angle1, angle1_2, angle2, angle2_2);
+            fprintf(fp,"%d %f %f %f %f %f %f\n",class, b.x, b.y, b.w, b.h, ba1, ba2);
             fclose(fp);
             im.data[ ((int)(b.y*im.h)-1)*im.w + (int)(b.x*im.w) ] = red;
 
@@ -334,11 +369,17 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             if(right > im.w-1) right = im.w-1;
             if(top < 0) top = 0;
             if(bot > im.h-1) bot = im.h-1;
-
+            char angle_print[10];
+            snprintf(angle_print, sizeof(angle_print), "%.2f", angle_result);    
             draw_box_width(im, left, top, right, bot, width, red, green, blue);
+
             if (alphabet) {
                 image label = get_label(alphabet, labelstr, (im.h*.03)/10);
                 draw_label(im, top + width, left, label, rgb);
+                free_image(label);
+
+                label = get_label(alphabet, angle_print, (im.h*.03)/10);
+                draw_label(im, top + width, left+100, label, rgb);
                 free_image(label);
             }
             if (masks){
